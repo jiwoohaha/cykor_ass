@@ -51,6 +51,11 @@ void push(char *name, int a)
     }
     call_stack[SP]=a;
 }
+
+void pop(void)
+{
+    SP -= 1;
+}
 /*
     현재 call_stack 전체를 출력합니다.
     해당 함수의 출력 결과들을 바탕으로 구현 완성도를 평가할 예정입니다.
@@ -99,6 +104,12 @@ void func1(int arg1, int arg2, int arg3)
     print_stack();
     func2(11, 13);
     // func2의 스택 프레임 제거 (함수 에필로그 + pop)
+    pop();
+    pop();
+    pop();
+    pop();
+    pop();
+    FP -= 5; //ebp 수정
     print_stack();
 }
 
@@ -108,24 +119,37 @@ void func2(int arg1, int arg2)
     push("arg2", arg2);
     push("arg1", arg1);
     push("Return Address", -1);
-    push("func1 SFP", -1);
+    push("func2 SFP", 4);
+    
     int var_2 = 200;
-
+    push("var_2", var_2);
     // func2의 스택 프레임 형성 (함수 프롤로그 + push)
+    FP += 5; // ebp 수정
     print_stack();
     func3(77);
     // func3의 스택 프레임 제거 (함수 에필로그 + pop)
+    pop();
+    pop();
+    pop();
+    pop();
+    pop();
+    FP -= 4; //ebp 수정
     print_stack();
 }
 
 
 void func3(int arg1)
 {
-    
+    push("arg1", arg1);
+    push("Return Address", -1);
+    push("func3 SFP", 9);
+
     int var_3 = 300;
     int var_4 = 400;
-
+    push("var_3", var_3);
+    push("var_4", var_4);
     // func3의 스택 프레임 형성 (함수 프롤로그 + push)
+    FP += 4; //ebp 수정
     print_stack();
 }
 
@@ -135,6 +159,13 @@ int main()
 {
     func1(1, 2, 3);
     // func1의 스택 프레임 제거 (함수 에필로그 + pop)
+    pop();
+    pop();
+    pop();
+    pop();
+    pop();
+    pop();
+    FP -= 6; //ebp 수정
     print_stack();
     
     return 0;
