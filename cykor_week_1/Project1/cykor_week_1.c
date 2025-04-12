@@ -41,6 +41,16 @@ void func1(int arg1, int arg2, int arg3);
 void func2(int arg1, int arg2);
 void func3(int arg1);
 
+
+
+void push(char* name,int a)
+{
+    SP += 1;
+    for (int i = 0;i < sizeof(name)/sizeof(char);i++) {
+        stack_info[SP][i] = name[i];
+    }
+    call_stack[SP]=a;
+}
 /*
     현재 call_stack 전체를 출력합니다.
     해당 함수의 출력 결과들을 바탕으로 구현 완성도를 평가할 예정입니다.
@@ -112,10 +122,10 @@ void func3(int arg1)
 //main 함수에 관련된 stack frame은 구현하지 않아도 됩니다.
 int main()
 {
-
-    printf("똥");
+    push("arg",1);
     func1(1, 2, 3);
     // func1의 스택 프레임 제거 (함수 에필로그 + pop)
     print_stack();
+    
     return 0;
 }
