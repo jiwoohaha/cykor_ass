@@ -43,18 +43,26 @@ void func3(int arg1);
 
 
 
-void push(char *name, int a)
+void push(char *name, int a)  //push 함수 구현
 {
     SP += 1;
     for (int i = 0;i < 20;i++) { //원래 i<20 이 아니라 i<sizeof(name) 이였는데 이게 배열의 길이가 아니라 포인터 크기라서 수정함.
         stack_info[SP][i] = name[i];
     }
     call_stack[SP]=a;
+    
+   
+}
+
+void clearFP(void)
+{
+    FP = SP;
 }
 
 void pop(void)
 {
     SP -= 1;
+    FP -= 2;
 }
 /*
     현재 call_stack 전체를 출력합니다.
@@ -98,9 +106,9 @@ void func1(int arg1, int arg2, int arg3)
     push("Return Address", -1); //반환주소 push
     push("func1 SFP", -1);   
     int var_1 = 100;
+    clearFP();
     push("var_1", var_1);
     // func1의 스택 프레임 형성 (함수 프롤로그 + push) 
-    FP += 5; // ebp 설정
     print_stack();
     func2(11, 13);
     // func2의 스택 프레임 제거 (함수 에필로그 + pop)
@@ -108,23 +116,25 @@ void func1(int arg1, int arg2, int arg3)
     pop();
     pop();
     pop();
+    clearFP();
     pop();
-    FP -= 5; //ebp 수정
+
     print_stack();
 }
 
 
 void func2(int arg1, int arg2)
 {
+
     push("arg2", arg2);
     push("arg1", arg1);
     push("Return Address", -1);
     push("func2 SFP", 4);
     
     int var_2 = 200;
+    clearFP();
     push("var_2", var_2);
     // func2의 스택 프레임 형성 (함수 프롤로그 + push)
-    FP += 5; // ebp 수정
     print_stack();
     func3(77);
     // func3의 스택 프레임 제거 (함수 에필로그 + pop)
@@ -132,8 +142,8 @@ void func2(int arg1, int arg2)
     pop();
     pop();
     pop();
+    clearFP();
     pop();
-    FP -= 4; //ebp 수정
     print_stack();
 }
 
@@ -146,10 +156,10 @@ void func3(int arg1)
 
     int var_3 = 300;
     int var_4 = 400;
+    clearFP();
     push("var_3", var_3);
     push("var_4", var_4);
     // func3의 스택 프레임 형성 (함수 프롤로그 + push)
-    FP += 4; //ebp 수정
     print_stack();
 }
 
@@ -157,6 +167,7 @@ void func3(int arg1)
 //main 함수에 관련된 stack frame은 구현하지 않아도 됩니다.
 int main()
 {
+ 
     func1(1, 2, 3);
     // func1의 스택 프레임 제거 (함수 에필로그 + pop)
     pop();
@@ -165,8 +176,6 @@ int main()
     pop();
     pop();
     pop();
-    FP -= 6; //ebp 수정
     print_stack();
-    
     return 0;
 }
